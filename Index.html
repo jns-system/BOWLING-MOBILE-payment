@@ -23,7 +23,7 @@
                     },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'wiggle': 'wiggle 1.5s ease-in-out infinite',
                         'float-slow': 'float 6s ease-in-out infinite',
                         'float-medium': 'float 4s ease-in-out infinite reverse',
                     },
@@ -33,8 +33,8 @@
                             '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
                         },
                         wiggle: {
-                            '0%, 100%': { transform: 'rotate(-2deg)' },
-                            '50%': { transform: 'rotate(2deg)' },
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
                         },
                         float: {
                             '0%, 100%': { transform: 'translateY(0) scale(1)' },
@@ -64,8 +64,6 @@
         /* Sequential Animation Delays */
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
         
         /* Custom scrollbar hidden */
         ::-webkit-scrollbar {
@@ -74,8 +72,6 @@
         }
 
         /* --- Pastel & Cute Animations --- */
-        
-        /* 1. Shimmer Text Effect */
         .animate-shimmer-text-dark {
             background: linear-gradient(
                 90deg, 
@@ -95,7 +91,6 @@
             to { background-position: 200% center; }
         }
 
-        /* 2. Floating Icon Effect */
         .animate-float-icon {
             animation: floatIcon 3s ease-in-out infinite;
         }
@@ -104,7 +99,6 @@
             50% { transform: translateY(-5px) rotate(3deg); }
         }
 
-        /* 3. Expanding Line Effect */
         .animate-expand-line {
             animation: expand 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             width: 0;
@@ -113,7 +107,6 @@
             to { width: 3rem; }
         }
 
-        /* 4. Moving Pastel Gradient Background */
         .bg-pan-pastel {
             background: linear-gradient(-45deg, #fce7f3, #e0f2fe, #fef3c7, #f3e8ff);
             background-size: 400% 400%;
@@ -125,157 +118,118 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Button Press Effect */
         .btn-squish:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
+        }
+
+        /* 3D Tilt Wrapper */
+        #tiltWrapper {
+            perspective: 1000px;
+        }
+        #tiltCard {
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+        }
+
+        /* Confetti & Sparkle Animations */
+        @keyframes floatUpAndFade {
+            0% { transform: translateY(0) scale(0.5); opacity: 0.8; }
+            100% { transform: translateY(-80px) scale(1.5) rotate(20deg); opacity: 0; }
         }
         
-        /* Smooth transition for toast */
-        #toast {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        @keyframes popOut {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            50% { transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot)); opacity: 1; }
+            100% { transform: translate(var(--tx), calc(var(--ty) + 40px)) scale(1) rotate(calc(var(--rot) + 20deg)); opacity: 0; }
         }
     </style>
 </head>
 <body class="bg-[#faf5ff] text-gray-800 min-h-screen flex items-center justify-center p-4 sm:p-8 antialiased pb-8 overflow-x-hidden relative">
 
     <!-- Floating Background Elements -->
-    <div class="fixed top-10 left-0 w-32 h-32 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-xl animate-float-slow pointer-events-none"></div>
-    <div class="fixed bottom-20 right-0 w-48 h-48 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-xl animate-float-medium pointer-events-none"></div>
-    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-100/20 rounded-full mix-blend-multiply filter blur-2xl animate-pulse pointer-events-none delay-1000"></div>
+    <div class="fixed top-10 left-0 w-32 h-32 bg-pink-200/40 rounded-full mix-blend-multiply filter blur-xl animate-float-slow pointer-events-none"></div>
+    <div class="fixed bottom-20 right-0 w-48 h-48 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-xl animate-float-medium pointer-events-none"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-100/30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse pointer-events-none delay-1000"></div>
 
     <!-- Main Container -->
     <main class="max-w-md w-full bg-white rounded-[2rem] border-2 border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative opacity-0 animate-fade-in-up backdrop-blur-xl z-10">
         
         <!-- Header Section -->
-        <header class="bg-pan-pastel text-gray-800 text-center py-8 px-4 relative overflow-hidden group">
-            <!-- Decorative stars/dots -->
+        <header class="bg-pan-pastel text-gray-800 text-center py-10 px-4 relative overflow-hidden group">
             <div class="absolute inset-0 pointer-events-none">
-                <i data-lucide="sparkle" class="absolute top-4 left-6 w-3 h-3 text-pink-400 animate-pulse delay-100"></i>
-                <i data-lucide="sparkle" class="absolute top-6 right-8 w-2 h-2 text-blue-400 animate-pulse delay-300"></i>
-                <i data-lucide="sparkle" class="absolute bottom-4 left-1/4 w-2 h-2 text-yellow-500 animate-pulse delay-200"></i>
+                <i data-lucide="sparkle" class="absolute top-4 left-6 w-4 h-4 text-pink-400 animate-pulse delay-100"></i>
+                <i data-lucide="sparkle" class="absolute top-6 right-8 w-3 h-3 text-blue-400 animate-pulse delay-300"></i>
+                <i data-lucide="sparkle" class="absolute bottom-4 left-1/4 w-3 h-3 text-yellow-500 animate-pulse delay-200"></i>
             </div>
             
             <div class="relative z-10 flex flex-col items-center">
-                <!-- Floating Icon -->
-                <div class="p-2.5 bg-white/70 rounded-full backdrop-blur-md mb-2 shadow-sm animate-float-icon border border-white">
-                    <i data-lucide="shopping-bag" class="w-6 h-6 text-pink-500"></i>
+                <div class="p-3 bg-white/70 rounded-full backdrop-blur-md mb-3 shadow-sm animate-float-icon border border-white">
+                    <i data-lucide="shopping-bag" class="w-7 h-7 text-pink-500"></i>
                 </div>
                 
-                <!-- Title -->
-                <h1 class="text-3xl font-semibold tracking-wider animate-shimmer-text-dark drop-shadow-sm mt-1">PAYMENT</h1>
-                
-                <!-- Expanding Divider -->
-                <div class="h-1 bg-gradient-to-r from-pink-300 via-blue-300 to-yellow-300 rounded-full my-2 animate-expand-line mx-auto"></div>
-                
-                <p class="text-[10px] tracking-[0.2em] font-medium text-gray-600 bg-white/60 px-3 py-1 rounded-full shadow-sm uppercase">
-                    BOWLING_MOBILE
-                </p>
+                <h1 class="text-3xl font-semibold tracking-wider animate-shimmer-text-dark drop-shadow-sm">PAYMENT</h1>
+                <div class="h-1 bg-gradient-to-r from-pink-300 via-blue-300 to-yellow-300 rounded-full my-3 animate-expand-line mx-auto"></div>
+                <p class="text-xs tracking-[0.15em] text-gray-500 bg-white/50 px-3 py-1 rounded-full shadow-sm">BOWLING_MOBILE</p>
             </div>
         </header>
 
         <div class="p-5 space-y-6 relative z-20 bg-white rounded-t-[2rem] -mt-4">
 
-            <!-- 1. Bank Account Bordered Block Section -->
-            <section class="opacity-0 animate-fade-in-up delay-100">
-                <h2 class="text-xs font-semibold text-gray-400 tracking-wider flex items-center gap-1.5 mb-3">
-                    <i data-lucide="credit-card" class="w-4 h-4 text-green-400"></i>
-                    บัญชีสำหรับโอนเงิน
-                </h2>
+            <!-- 1. The Main Bank Account Block (Now with 3D Tilt) -->
+            <section class="opacity-0 animate-fade-in-up delay-100" id="tiltWrapper">
+                <div id="tiltCard" class="relative overflow-hidden w-full p-6 rounded-[1.5rem] bg-gradient-to-br from-green-50/50 to-white border-[3px] border-dashed border-green-200 hover:border-green-300 shadow-sm group">
+                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-green-100/50 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
 
-                <!-- บล็อคใหม่แบบมีเส้นขอบ -->
-                <div class="relative overflow-hidden group bg-gradient-to-b from-green-50/50 to-white border-2 border-dashed border-green-300 rounded-3xl p-5 hover:border-green-400 transition-all duration-300 shadow-sm hover:shadow-md">
-                    <!-- ลายน้ำตกแต่ง -->
-                    <i data-lucide="landmark" class="absolute -right-4 -bottom-4 w-24 h-24 text-green-100/50 pointer-events-none transform -rotate-12 group-hover:scale-110 transition-transform duration-500"></i>
-                    
-                    <div class="relative z-10 flex flex-col items-center text-center space-y-3">
-                        <!-- โลโก้และชื่อธนาคาร -->
-                        <div class="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-green-100 shadow-sm">
-                            <div class="w-6 h-6 rounded-full bg-[#00A950] flex items-center justify-center text-white text-[10px] font-bold">K</div>
-                            <span class="text-sm font-semibold text-[#00A950] tracking-wide">ธนาคาร กสิกรไทย</span>
+                    <div class="relative z-10 flex flex-col items-center text-center space-y-4 pointer-events-none">
+                        
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center text-[#138f2d] animate-wiggle shadow-sm border-2 border-green-100">
+                            <i data-lucide="landmark" class="w-7 h-7"></i>
                         </div>
-
-                        <!-- เลขบัญชี -->
-                        <div class="py-2">
-                            <p class="text-3xl font-bold text-gray-800 tracking-wider">177-3-63989-9</p>
+                        
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium tracking-wide">ธนาคาร กสิกรไทย</p>
+                            <!-- Transform Z makes the text pop out during 3D tilt -->
+                            <p class="text-4xl text-gray-800 font-bold my-2 tracking-widest drop-shadow-md" style="transform: translateZ(30px);">177-363-9899</p>
+                            <div class="mt-3 inline-block" style="transform: translateZ(20px);">
+                                <p class="text-[12px] text-green-700 bg-green-100/80 px-3 py-1.5 rounded-full border border-green-200 shadow-sm">
+                                    ชื่อบัญชี : <span class="font-semibold">บจก.บีแอลพี ไอที แอนด์ อิเล็กทรอนิกส์เท่านั้น</span>
+                                </p>
+                            </div>
                         </div>
-
-                        <!-- ชื่อบัญชี -->
-                        <div class="w-full bg-green-50/80 rounded-xl p-2.5 border border-green-100/50">
-                            <p class="text-[11px] text-gray-500 mb-0.5">ชื่อบัญชี</p>
-                            <p class="text-[13px] font-semibold text-gray-800 leading-snug">บจก.บีแอลพี ไอที แอนด์ อิเล็กทรอนิกส์<span class="text-green-600">เท่านั้น</span></p>
-                        </div>
-
-                        <!-- ปุ่มคัดลอก -->
-                        <button onclick="copyToClipboard('1773639899', this)" class="btn-squish mt-2 w-full flex items-center justify-center gap-2 bg-[#00A950] hover:bg-[#008f43] text-white py-3 rounded-xl text-sm font-medium transition-all shadow-md shadow-green-200">
+                        
+                        <button style="pointer-events: auto; transform: translateZ(40px);" onclick="copyToClipboard(event, '1773639899', this)" class="btn-squish mt-3 flex items-center justify-center gap-2 w-full max-w-[220px] mx-auto bg-white hover:bg-green-50 text-green-600 border-2 border-green-200 hover:border-green-300 py-3 rounded-2xl text-sm font-medium transition-all shadow-sm hover:shadow-md">
                             <i data-lucide="copy" class="w-4 h-4"></i>
                             คัดลอกเลขบัญชี
                         </button>
                     </div>
                 </div>
             </section>
-
-            <hr class="border-gray-100 border-dashed">
-
-            <!-- 2. Open Banking Apps Section (AUTO COPY) -->
-            <section class="opacity-0 animate-fade-in-up delay-200">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-xs font-semibold text-gray-400 tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="smartphone-nfc" class="w-4 h-4 text-purple-400"></i>
-                        เปิดแอพธนาคารบนมือถือ
-                    </h2>
-                </div>
-                <div class="grid grid-cols-4 gap-2">
-                    <!-- K PLUS -->
-                    <button onclick="copyAndOpenApp('kplus://', 'K PLUS', '1773639899')" class="flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl bg-white border border-gray-100 shadow-sm hover:border-green-200 hover:bg-green-50 transition-all btn-squish relative group">
-                        <div class="w-10 h-10 bg-[#00A950] rounded-xl flex items-center justify-center text-white shadow-sm font-bold text-xl group-hover:scale-105 transition-transform">K</div>
-                        <span class="text-[9px] text-gray-600 font-medium">K PLUS</span>
-                    </button>
-                    <!-- SCB EASY -->
-                    <button onclick="copyAndOpenApp('scbeasy://', 'SCB EASY', '1773639899')" class="flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl bg-white border border-gray-100 shadow-sm hover:border-purple-200 hover:bg-purple-50 transition-all btn-squish relative group">
-                        <div class="w-10 h-10 bg-[#4E2E7F] rounded-xl flex items-center justify-center text-white shadow-sm font-bold text-xl group-hover:scale-105 transition-transform">S</div>
-                        <span class="text-[9px] text-gray-600 font-medium">SCB</span>
-                    </button>
-                    <!-- Krungthai NEXT -->
-                    <button onclick="copyAndOpenApp('ktbnext://', 'Krungthai NEXT', '1773639899')" class="flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl bg-white border border-gray-100 shadow-sm hover:border-sky-200 hover:bg-sky-50 transition-all btn-squish relative group">
-                        <div class="w-10 h-10 bg-[#1BA1E2] rounded-xl flex items-center justify-center text-white shadow-sm font-bold text-xl font-sans group-hover:scale-105 transition-transform">K</div>
-                        <span class="text-[9px] text-gray-600 font-medium">Krungthai</span>
-                    </button>
-                    <!-- MyMo by GSB -->
-                    <button onclick="copyAndOpenApp('mymo://', 'MyMo', '1773639899')" class="flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl bg-white border border-gray-100 shadow-sm hover:border-pink-200 hover:bg-pink-50 transition-all btn-squish relative group">
-                        <div class="w-10 h-10 bg-[#EB198D] rounded-xl flex items-center justify-center text-white shadow-sm font-bold text-xl group-hover:scale-105 transition-transform">M</div>
-                        <span class="text-[9px] text-gray-600 font-medium">MyMo</span>
-                    </button>
-                </div>
-                <p class="text-[10px] text-gray-400 text-center mt-2.5 flex items-center justify-center gap-1">
-                    <i data-lucide="info" class="w-3 h-3"></i> ระบบจะคัดลอกเลขบัญชีให้อัตโนมัติ สามารถกดวางในแอพได้เลย
-                </p>
-            </section>
             
-            <!-- 3. Notes Section -->
-            <section class="opacity-0 animate-fade-in-up delay-300 bg-yellow-50/60 p-5 rounded-2xl border border-yellow-100 relative overflow-hidden">
-                <i data-lucide="shield-check" class="absolute -right-3 -bottom-3 w-16 h-16 text-yellow-200/50 pointer-events-none"></i>
+            <!-- 2. Notes Section -->
+            <section class="opacity-0 animate-fade-in-up delay-200 bg-yellow-50/60 p-5 rounded-[1.5rem] border border-yellow-100 relative overflow-hidden">
+                <i data-lucide="info" class="absolute -right-3 -bottom-3 w-20 h-20 text-yellow-100/50 pointer-events-none"></i>
                 
-                <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
-                    <i data-lucide="clipboard-list" class="w-4 h-4 text-yellow-500"></i>
+                <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-yellow-500"></i>
                     ข้อแนะนำในการโอนยอด
                 </h3>
 
-                <ul class="space-y-3 text-[12px] text-gray-700 relative z-10 leading-relaxed">
-                    <li class="flex items-start gap-2.5">
-                        <div class="mt-0.5 p-1 bg-green-100 rounded-full text-green-600 shrink-0">
-                            <i data-lucide="check" class="w-2.5 h-2.5"></i>
+                <ul class="space-y-3 text-[12px] text-gray-600 relative z-10 leading-relaxed">
+                    <li class="flex items-start gap-2">
+                        <div class="mt-0.5 p-1 bg-pink-100 rounded-full text-pink-500 shrink-0 shadow-sm">
+                            <i data-lucide="arrow-right-circle" class="w-3 h-3"></i>
                         </div>
-                        <span>โอนเงินเข้า บัญชี : <strong>บจก.บีแอลพี ไอที แอนด์ อิเล็กทรอนิกส์เท่านั้น</strong></span>
+                        <span>โอนเงินเข้า บัญชี : <span class="font-semibold text-gray-800">บจก.บีแอลพี ไอที แอนด์ อิเล็กทรอนิกส์เท่านั้น</span></span>
                     </li>
-                    <li class="flex items-start gap-2.5">
-                        <div class="mt-0.5 p-1 bg-blue-100 rounded-full text-blue-500 shrink-0">
-                            <i data-lucide="image-plus" class="w-2.5 h-2.5"></i>
+                    <li class="flex items-start gap-2">
+                        <div class="mt-0.5 p-1 bg-blue-100 rounded-full text-blue-500 shrink-0 shadow-sm">
+                            <i data-lucide="image-plus" class="w-3 h-3"></i>
                         </div>
-                        <span>โอนเงินเปิดบิล โอนเงินส่งยอด <span class="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-blue-600 font-medium">แนบสลิปให้ทางร้านทุกครั้ง</span></span>
+                        <span>โอนเงินเปิดบิล โอนเงินส่งยอด <span class="font-semibold text-blue-600">แนบสลิปให้ทางร้านทุกครั้ง</span></span>
                     </li>
-                    <li class="flex items-start gap-2.5 text-red-600 bg-red-50/50 p-2 rounded-lg border border-red-100/50">
-                        <div class="mt-0.5 p-1 bg-red-100 rounded-full text-red-600 shrink-0">
-                            <i data-lucide="alert-triangle" class="w-2.5 h-2.5"></i>
+                    <li class="flex items-start gap-2 text-red-500 bg-red-50/50 p-2 rounded-xl border border-red-100/50 shadow-sm">
+                        <div class="mt-0.5 p-1 bg-red-100 rounded-full text-red-500 shrink-0">
+                            <i data-lucide="shield-alert" class="w-3 h-3"></i>
                         </div>
                         <span class="font-medium">หากตรวจสอบเจอสลิปปลอม ทางร้านจะดำเนินคดีทางกฏหมายทันที</span>
                     </li>
@@ -286,84 +240,166 @@
     </main>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 glass-toast text-gray-800 px-5 py-2.5 rounded-full flex items-center gap-2.5 transition-all duration-300 -translate-y-20 opacity-0 z-[100] scale-95">
-        <div class="bg-gradient-to-r from-green-100 to-emerald-100 p-1 rounded-full">
-            <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 glass-toast text-gray-800 px-6 py-3 rounded-full flex items-center gap-3 transition-all duration-300 -translate-y-24 opacity-0 z-[100] scale-90">
+        <div class="bg-gradient-to-r from-green-200 to-emerald-200 p-1.5 rounded-full animate-spin-slow">
+            <i data-lucide="sparkles" class="w-4 h-4 text-green-700"></i>
         </div>
         <span id="toastMessage" class="text-sm font-medium tracking-wide">คัดลอกสำเร็จ</span>
     </div>
+
+    <style>
+        .animate-spin-slow { animation: spin 3s linear infinite; }
+        #toast { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    </style>
 
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Copy Account Number with Button Style Change
-        function copyToClipboard(text, btnElement) {
+        // ----------------------------------------------------
+        // 1. Magic Cursor (Sparkles on Mouse Move)
+        // ----------------------------------------------------
+        let lastMove = 0;
+        window.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMove < 70) return; // limit sparkle spawn rate
+            lastMove = now;
+            
+            if (Math.random() > 0.6) return; // random chance to skip for subtleness
+
+            const sparkle = document.createElement('div');
+            sparkle.innerText = '✨';
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = (e.clientX - 10) + 'px';
+            sparkle.style.top = (e.clientY - 10) + 'px';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '9998';
+            sparkle.style.fontSize = (Math.random() * 10 + 10) + 'px'; // Random size
+            sparkle.style.animation = 'floatUpAndFade 1.2s ease-out forwards';
+            
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1200);
+        });
+
+        // ----------------------------------------------------
+        // 2. 3D Tilt Effect on Bank Card
+        // ----------------------------------------------------
+        const tiltCard = document.getElementById('tiltCard');
+        
+        function handleTilt(e) {
+            // Get mouse or touch coordinates
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            
+            const rect = tiltCard.getBoundingClientRect();
+            
+            // Calculate center of card
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Calculate distance from center (normalized -1 to 1)
+            const percentX = (clientX - centerX) / (rect.width / 2);
+            const percentY = (clientY - centerY) / (rect.height / 2);
+            
+            // Multiply by max rotation degree (e.g. 10 degrees)
+            const rotateX = percentY * -10; 
+            const rotateY = percentX * 10;
+            
+            // Apply transform
+            tiltCard.style.transform = `scale3d(1.02, 1.02, 1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            tiltCard.style.transition = 'transform 0.1s ease-out';
+        }
+
+        function resetTilt() {
+            tiltCard.style.transform = `scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg)`;
+            tiltCard.style.transition = 'transform 0.5s ease-out';
+        }
+
+        tiltCard.addEventListener('mousemove', handleTilt);
+        tiltCard.addEventListener('mouseleave', resetTilt);
+        
+        // Touch support for mobile
+        tiltCard.addEventListener('touchmove', handleTilt, {passive: true});
+        tiltCard.addEventListener('touchend', resetTilt);
+
+        // ----------------------------------------------------
+        // 3. Confetti Pop on Copy
+        // ----------------------------------------------------
+        function spawnConfetti(x, y) {
+            const emojis = ['💖', '✨', '🌸', '💸', '🎀'];
+            const count = 20; // Number of items to burst
+            
+            for(let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.position = 'fixed';
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '9999';
+                el.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                
+                // Randomize trajectory
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 80 + 50; // Distance
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                const rotation = Math.random() * 360 - 180;
+                
+                el.style.setProperty('--tx', `${tx}px`);
+                el.style.setProperty('--ty', `${ty}px`);
+                el.style.setProperty('--rot', `${rotation}deg`);
+                el.style.animation = 'popOut 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'; // Bouncy ease out
+                
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 1000);
+            }
+        }
+
+        // Copy Account Number
+        function copyToClipboard(event, text, btnElement) {
+            // Trigger Confetti Pop exactly where user clicked!
+            const clickX = event.clientX || event.touches?.[0].clientX || window.innerWidth / 2;
+            const clickY = event.clientY || event.touches?.[0].clientY || window.innerHeight / 2;
+            spawnConfetti(clickX, clickY);
+
             const originalHTML = btnElement.innerHTML;
             
-            // Temporary change button style
-            btnElement.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> คัดลอกสำเร็จแล้ว`;
-            btnElement.classList.add('bg-[#008f43]', 'scale-95');
+            // Temporary change icon
+            btnElement.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-green-600"></i> <span class="text-green-700">คัดลอกแล้วจ้า!</span>`;
+            btnElement.classList.add('bg-green-100', 'border-green-300', 'scale-105');
             lucide.createIcons();
 
             const copyProcess = () => {
-                showToast(`คัดลอกเลขบัญชีสำเร็จ ✨`);
-                // Revert button after 2 seconds
+                showToast(`คัดลอกเลขบัญชี 177-363-9899 เรียบร้อย ✨`);
                 setTimeout(() => {
                     btnElement.innerHTML = originalHTML;
-                    btnElement.classList.remove('bg-[#008f43]', 'scale-95');
+                    btnElement.classList.remove('bg-green-100', 'border-green-300', 'scale-105');
                     lucide.createIcons();
                 }, 2000);
             };
 
-            executeCopy(text, copyProcess);
-        }
-
-        // Auto Copy and Open Bank Apps
-        function copyAndOpenApp(scheme, appName, textToCopy) {
-            const proceedToApp = () => {
-                showToast(`คัดลอกเลขบัญชีแล้ว กำลังเปิด ${appName} 🚀`);
-                // หน่วงเวลาให้ลูกค้าเห็นแจ้งเตือนว่าทำการคัดลอกแล้ว ก่อนเปิดแอพ
-                setTimeout(() => {
-                    window.location.href = scheme;
-                }, 1200); 
-            };
-            
-            executeCopy(textToCopy, proceedToApp);
-        }
-
-        // Helper function for copying text reliably across devices
-        function executeCopy(text, successCallback) {
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(successCallback).catch(err => {
-                    fallbackCopyTextToClipboard(text, successCallback);
-                });
+                navigator.clipboard.writeText(text).then(copyProcess);
             } else {
-                fallbackCopyTextToClipboard(text, successCallback);
+                let textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyProcess();
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                textArea.remove();
             }
         }
 
-        function fallbackCopyTextToClipboard(text, successCallback) {
-            let textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.position = "fixed";
-            textArea.style.opacity = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                successCallback();
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-                successCallback(); // Continue even if failed
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // Top Toast Notification Animation
+        // Toast Notification Animation
         let toastTimeout;
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -371,14 +407,12 @@
             
             toastMessage.textContent = message;
             
-            // Show
             toast.style.transform = 'translate(-50%, 0) scale(1)';
             toast.style.opacity = '1';
             
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
-                // Hide
-                toast.style.transform = 'translate(-50%, -5rem) scale(0.95)';
+                toast.style.transform = 'translate(-50%, -6rem) scale(0.9)';
                 toast.style.opacity = '0';
             }, 3000);
         }
